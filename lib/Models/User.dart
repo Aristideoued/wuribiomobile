@@ -1,9 +1,11 @@
+import 'dart:typed_data';
+
 class User {
   int? id;
   String firstName;
   String lastName;
   String? photoPath;
-  String? fingerprintData;
+  Uint8List? fingerprintData;
   DateTime createdAt;
   DateTime? lastLogin;
 

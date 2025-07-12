@@ -51,6 +51,7 @@ class DatabaseHelper {
   Future<List<User>> getAllUsers() async {
     final dbClient = await db;
     final List<Map<String, dynamic>> maps = await dbClient.query('users');
+    print(maps);
     return maps.map((map) => User.fromMap(map)).toList();
   }
 

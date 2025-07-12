@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444631048385",
+    "project_id": "wuribiometrie",
+    "storage_bucket": "wuribiometrie.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444631048385:android:0dec905151d61c00287440",
+        "android_client_info": {
+          "package_name": "com.example.wuriproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqCwn_cmqQj_Aj1XCbFhFZBxD0KeTyqlw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

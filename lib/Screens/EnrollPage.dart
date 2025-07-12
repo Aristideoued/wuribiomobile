@@ -5,7 +5,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:wuriproject/Configs/Database/DatabaseHelper.dart';
 import 'package:wuriproject/Models/User.dart';
-
+import 'package:wuriproject/Services/FingerPrintService.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class EnrollPage extends StatefulWidget {
   const EnrollPage({super.key});
@@ -21,6 +25,8 @@ class _EnrollPageState extends State<EnrollPage> {
 
   File? _photo;
   String? _fingerprintData;
+  Uint8List? _fingerprintBytes;
+
 
   final dbHelper = DatabaseHelper();
 
@@ -35,10 +41,38 @@ class _EnrollPageState extends State<EnrollPage> {
     }
   }
 
-  Future<void> _captureFingerprint() async {
+  
+    Future<void> _captureFingerprint() async {
+    const channel = MethodChannel('sf370/sdk');
+    try {
+      final String base64 = await channel.invokeMethod('captureFingerprint');
+      final Uint8List imageBytes = base64Decode(base64);
+      Image.memory(imageBytes);
+            setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Empreinte capturée')));
+
+        _fingerprintBytes = base64Decode(base64);
+      });
+    } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur de capture')));
+
+      print('Erreur SDK : $e');
+    }
+  }
+ /* Future<void>_captureFingerprint() async{
+      final data = await FingerprintService.captureFingerprint();
+    if (data != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Empreinte capturée')));
+      print("Données : $data");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur de capture')));
+    }
+  }*/
+
+  /*Future<void> _captureFingerprint() async {
     final LocalAuthentication auth = LocalAuthentication();
     final isAvailable = await auth.canCheckBiometrics;
-     _fingerprintData = 'authenticated';
+    // _fingerprintData = 'authenticated';
 
     if (!isAvailable) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,6 +80,9 @@ class _EnrollPageState extends State<EnrollPage> {
       );
       return;
     }
+       ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Biométrie disponible')),
+      );
 
     final authenticated = await auth.authenticate(
       localizedReason: 'Veuillez scanner votre empreinte',
@@ -57,7 +94,7 @@ class _EnrollPageState extends State<EnrollPage> {
         _fingerprintData = 'authenticated';
       });
     }
-  }
+  }*/
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -66,7 +103,7 @@ class _EnrollPageState extends State<EnrollPage> {
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
       photoPath: _photo?.path,
-      fingerprintData: _fingerprintData,
+      fingerprintData: _fingerprintBytes,
       createdAt: DateTime.now(),
     );
 
@@ -90,7 +127,7 @@ class _EnrollPageState extends State<EnrollPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Enrôlement'),
+        title: const Text('Enrôlement',style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.green,
         leading: const BackButton(color: Colors.white),
       ),
@@ -179,6 +216,11 @@ class _EnrollPageState extends State<EnrollPage> {
                   "Empreinte digitale",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
+              ),
+                if (_fingerprintBytes != null)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.memory(_fingerprintBytes!),
               ),
               const SizedBox(height: 12),
               ElevatedButton.icon(

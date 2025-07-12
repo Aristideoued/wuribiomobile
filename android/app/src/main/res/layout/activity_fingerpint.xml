@@ -1,0 +1,71 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:orientation="vertical">
+
+        <!-- Image principale -->
+        
+
+        <!-- Contenu principal -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <!-- Titre section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Informations biométriques"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp" />
+
+            <!-- Instruction -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Appuyer sur l'image pour prendre l'empreinte"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Bouton pouce droit -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="8"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <ImageButton
+        android:id="@+id/ajoutassure_step4_droite_pouce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="8"
+       
+       
+              
+        android:src="@drawable/finger"
+        android:contentDescription="" />
+
+    
+</LinearLayout>
+
+                <!-- Ajoute ici d’autres doigts si besoin avec le même pattern -->
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

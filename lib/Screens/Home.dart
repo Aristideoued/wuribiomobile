@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:wuriproject/Configs/Database/DatabaseHelper.dart';
 import 'package:wuriproject/Models/User.dart';
@@ -34,7 +36,8 @@ class _AuthHomePageState extends State<AuthHomePage> {
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: const Text('Wuri-Biométrie'),
+      title: const Text('Wuri-Biométrie' ,
+      style: TextStyle(color: Colors.white),),
       backgroundColor: Colors.blue[800],
     ),
     body: RefreshIndicator(
@@ -232,7 +235,7 @@ Widget build(BuildContext context) {
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                 leading: user.photoPath != null
                                     ? CircleAvatar(
-                                        backgroundImage: AssetImage(user.photoPath!),
+                                        backgroundImage:FileImage(File(user.photoPath!)),
                                       )
                                     : const CircleAvatar(
                                         child: Icon(Icons.person),

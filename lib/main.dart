@@ -1,29 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:wuriproject/GoRouter.dart';
-import 'package:wuriproject/ImageInterface.dart';
-import 'package:wuriproject/Login.dart';
-import 'package:wuriproject/MediaInterface.dart';
+import 'package:wuriproject/Api/theme_notifier.dart';
 import 'package:wuriproject/Routes/routes.dart';
+import 'package:wuriproject/Screens/DarkMode.dart';
+import 'package:wuriproject/Screens/FirebaseDemo.dart';
+import 'package:wuriproject/Screens/SqfliteDemo.dart';
+import 'package:wuriproject/Services/firebase_service.dart';
 
-void main() {
+void main() async {
 runApp(MyApp());
+ 
 }
 
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-     // routerConfig: router,
-      // Définir les routes de l'application
+    
       initialRoute: '/',
       routes:routes
+      
     );
   }
 }
+
+/*void main() async {
+runApp(MyApp());
+ WidgetsFlutterBinding.ensureInitialized();
+   try {
+    await FirebaseService.initializeFirebase();
+    print('Firebase initialisé avec succès');
+  } catch (e) {
+    print('Erreur lors de l\'initialisation de Firebase: $e');
+  }
+
+  final themeNotifier = await ThemeNotifier.create();
+  runApp(MyApp(themeNotifier: themeNotifier));
+}*/
+
+
+/*class MyApp extends StatelessWidget {
+  final ThemeNotifier themeNotifier;
+  const MyApp({super.key, required this.themeNotifier});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: themeNotifier,
+      builder: (context, isDark, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+          initialRoute: '/',
+          routes: {
+         
+            '/': (context) =>
+                SharedPreferencesDemo(themeNotifier: themeNotifier),
+                  '/lite': (context) =>
+                  SqfliteDemo(),
+                    '/fire': (context) =>
+                  FirebaseDemo()
+           
+          },
+        );
+      },
+    );
+  }
+}*/
+
+
 /*
 class MyApp extends StatelessWidget {
 @override

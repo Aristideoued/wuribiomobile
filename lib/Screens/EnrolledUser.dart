@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:wuriproject/Models/User.dart';
 import 'package:wuriproject/Configs/Database/DatabaseHelper.dart';
@@ -192,7 +194,7 @@ class _AllUsersPageState extends State<AllUsersPage> {
   child: ListTile(
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     leading: user.photoPath != null
-        ? CircleAvatar(backgroundImage: AssetImage(user.photoPath!))
+        ? CircleAvatar(backgroundImage: FileImage(File(user.photoPath!)))
         : const CircleAvatar(child: Icon(Icons.person)),
     title: Text(
       '${user.firstName} ${user.lastName}',

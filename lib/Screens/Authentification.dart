@@ -1,8 +1,13 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:wuriproject/Configs/Database/DatabaseHelper.dart';
 import 'package:wuriproject/Models/User.dart';
-
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 class BiometricAuthPage extends StatefulWidget {
   const BiometricAuthPage({super.key});
 
@@ -14,7 +19,77 @@ class _BiometricAuthPageState extends State<BiometricAuthPage> {
   final dbHelper = DatabaseHelper();
   bool isVerified = false;
   User? verifiedUser;
+    Uint8List? _fingerToCompare;
 
+
+     Future<void> _compareFingerprint() async {
+    const channel = MethodChannel('sf370/sdk');
+    try {
+      final String base64 = await channel.invokeMethod('captureFingerprint');
+      final Uint8List imageBytes = base64Decode(base64);
+     Image.memory(imageBytes);
+            setState(() async {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Empreinte capturée')));
+
+        _fingerToCompare = base64Decode(base64);
+
+      
+        
+         //await Future.delayed(const Duration(seconds: 5));
+
+    
+
+
+      });
+    } catch (e) {
+        //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur de capture')));
+
+      print('Erreur SDK : $e');
+    }
+      final users = await dbHelper.getAllUsers();
+        final matchedUser = users.firstWhere(
+          (u) => u.fingerprintData != null && u.fingerprintData!.isNotEmpty,
+          orElse: () => User(id: null, firstName: '', lastName: '', createdAt: DateTime(2000)),
+        );
+      if (matchedUser.id != null && _fingerToCompare != null) {
+        setState(() {
+          isVerified = true;
+          verifiedUser = matchedUser;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Aucun utilisateur avec empreinte trouvé.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+  }
+
+
+ Future<void> compareEmpreinte() async {
+    final users = await dbHelper.getAllUsers();
+    final matchedUser = users.firstWhere(
+      (u) => u.fingerprintData != null && u.fingerprintData!.isNotEmpty,
+      orElse: () => User(id: null, firstName: '', lastName: '', createdAt: DateTime(2000)),
+    );
+
+    if (matchedUser.id != null && _fingerToCompare!=null) {
+      setState(() {
+        isVerified = true;
+        verifiedUser = matchedUser;
+      });
+
+   
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Aucun utilisateur avec empreinte trouvé.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
   Future<void> verifierEmpreinte() async {
     final users = await dbHelper.getAllUsers();
     final matchedUser = users.firstWhere(
@@ -107,14 +182,21 @@ class _BiometricAuthPageState extends State<BiometricAuthPage> {
                               size: 60, color: Colors.blue),
                         ),
                         const SizedBox(height: 16),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            // Auth native ici
-                          },
+                           if (_fingerToCompare != null)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Image.memory(_fingerToCompare!),
+                           
+                          ),
+                            const SizedBox(height: 16),
+
+                                    ElevatedButton.icon(
+                           onPressed: _compareFingerprint,
                           icon: const Icon(Icons.login, color: Colors.white),
                           label: const Text("S'authentifier",
                               style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
+                           
                             backgroundColor: Colors.blue,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 12),
@@ -214,7 +296,7 @@ class _BiometricAuthPageState extends State<BiometricAuthPage> {
                               contentPadding: EdgeInsets.zero,
                               leading: verifiedUser!.photoPath != null
                                   ? CircleAvatar(
-                                      backgroundImage: AssetImage(verifiedUser!.photoPath!),
+                                      backgroundImage: FileImage(File(verifiedUser!.photoPath!)),
                                       radius: 30,
                                     )
                                   : const CircleAvatar(
